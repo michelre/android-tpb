@@ -8,6 +8,7 @@
         android:id="@id/torrent_title"
         android:layout_width="0dp"
         android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@id/download_icon"
         android:layout_height="fill_parent"
         android:textSize="12sp"
         android:text="Two and a Half Men S11E22 Two and a Half Men S11E22 Two and a Half Men S11E22"
@@ -16,7 +17,6 @@
         android:id="@id/download_icon"
         android:layout_width="100dp"
         android:layout_height="31dp"
-        android:layout_toRightOf="@id/torrent_title"
         android:layout_alignParentRight="true"
         android:src="@drawable/ic_action_download"/>
     <TextView
@@ -32,45 +32,3 @@
         android:textStyle="italic"
         android:textColor="#FA8F02"/>
 </RelativeLayout>
-
-<!--<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="45dp"
-    android:orientation="horizontal">
-    <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_height="45dp"
-        android:layout_width="0dp"
-        android:layout_weight="0.7">
-    <TextView
-        android:id="@id/torrent_title"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:textSize="12sp"
-        android:text="Two and a Half Men S11E22 Two and a Half Men S11E22 Two and a Half Men S11E22"
-        android:gravity="fill_horizontal"/>
-    </RelativeLayout>
-
-    <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_height="45dp"
-        android:layout_width="0dp"
-        android:layout_weight="0.2">
-        <ImageView
-            android:id="@id/download_icon"
-            android:layout_width="match_parent"
-            android:layout_height="31dp"
-            android:src="@drawable/ic_action_download"/>
-        <TextView
-            android:id="@id/torrent_size"
-            android:layout_width="match_parent"
-            android:gravity="center_horizontal"
-            android:layout_height="14dp"
-            android:layout_below="@+id/download_icon"
-            android:textSize="11sp"
-            android:text="183.89 MiB"
-            android:textStyle="italic"
-            android:textColor="#FA8F02"/>
-        </RelativeLayout>
-</LinearLayout>-->

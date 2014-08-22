@@ -19,10 +19,6 @@ import com.remimichel.utils.Torrent;
 
 import java.util.List;
 
-
-/**
- * Created by remimichel on 14/08/2014.
- */
 public class SearchAdapter extends BaseAdapter {
 
     private Activity activity;

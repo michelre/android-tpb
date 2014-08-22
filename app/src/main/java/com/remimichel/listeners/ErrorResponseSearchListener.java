@@ -12,10 +12,6 @@ import com.android.volley.VolleyError;
 import com.remimichel.activities.R;
 import com.remimichel.activities.SearchableActivity;
 
-
-/**
- * Created by remimichel on 14/08/2014.
- */
 public class ErrorResponseSearchListener implements Response.ErrorListener{
 
     private SearchableActivity activity;
@@ -37,7 +33,7 @@ public class ErrorResponseSearchListener implements Response.ErrorListener{
         toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
         toast.setDuration(Toast.LENGTH_LONG);
         toast.setView(layout);
-        this.activity.getProgressDialog().dismiss();
+        //this.activity.getProgressDialog().dismiss();
         toast.show();
     }
 }

@@ -1,13 +1,17 @@
 package com.remimichel.listeners;
 
 import android.app.ProgressDialog;
+import android.util.Log;
 import android.widget.AbsListView;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.remimichel.activities.SearchableActivity;
 
-/**
- * Created by remimichel on 14/08/2014.
- */
+import java.net.URLEncoder;
+
 public class ScrollSearchListener implements AbsListView.OnScrollListener {
 
     private SearchableActivity activity;
@@ -22,20 +26,9 @@ public class ScrollSearchListener implements AbsListView.OnScrollListener {
     @Override
     public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
         int lastItem = firstVisibleItem + visibleItemCount;
-        if(totalItemCount > visibleItemCount && lastItem == totalItemCount){// && !this.activity.isLoading()){
+        if(totalItemCount > visibleItemCount && lastItem == totalItemCount && !this.activity.isLoading()){
             this.activity.incrementCurrentPage();
-            //this.activity.getProgressDialog().show(this.activity, "", "Searching torrents...", true, false);
-            this.activity.showProgressDialog();
-            ScrollSearchListener.this.activity.doSearch();
-            /*new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        //TODO --> Make the dialog disappeared correctly
-                        ScrollSearchListener.this.activity.doSearch();
-                    } catch (Exception e) {}
-                }
-            }).start();*/
+            this.activity.doSearch();
         }
     }
 }

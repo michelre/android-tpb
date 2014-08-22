@@ -21,10 +21,6 @@ import com.remimichel.requests.TorrentAddJsonObjectRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
-/**
- * Created by remimichel on 14/08/2014.
- */
 public class ItemClickListener implements AdapterView.OnItemClickListener{
 
     private Torrents torrents;
