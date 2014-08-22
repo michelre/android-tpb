@@ -80,8 +80,8 @@ public class SearchableActivity extends ListActivity{
                 public void run() {
                     try {
                         RequestQueue queue = Volley.newRequestQueue(SearchableActivity.this);
-                        String url = "http://90.42.184.170:9001/torrents/search?q=" + URLEncoder.encode(SearchableActivity.this.query, "UTF-8") + "&offset=" + SearchableActivity.this.currentPage;
-                        //String url = "http://192.168.1.17:9001/search?query=" + URLEncoder.encode(SearchableActivity.this.query, "UTF-8") + "&offset=" + SearchableActivity.this.currentPage;
+                        //String url = "http://90.42.184.170:9001/torrents/search?q=" + URLEncoder.encode(SearchableActivity.this.query, "UTF-8") + "&offset=" + SearchableActivity.this.currentPage;
+                        String url = "http://192.168.1.27:9001/torrents/search?q=" + URLEncoder.encode(SearchableActivity.this.query, "UTF-8") + "&offset=" + SearchableActivity.this.currentPage;
                         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new ResponseSearchListener(SearchableActivity.this), new ErrorResponseSearchListener(SearchableActivity.this));
                         jsonArrayRequest.setRetryPolicy(new DefaultRetryPolicy(30000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
                         queue.add(jsonArrayRequest);
