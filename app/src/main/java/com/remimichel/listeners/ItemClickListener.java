@@ -45,7 +45,7 @@ public class ItemClickListener implements AdapterView.OnItemClickListener{
         this.password = sharedPref.getString("KEY_PASSWORD", "");
         this.torrents = torrents;
         this.activity = activity;
-        this.initSessionId();
+        //this.initSessionId();
     }
 
     public void initSessionId(){
@@ -54,6 +54,7 @@ public class ItemClickListener implements AdapterView.OnItemClickListener{
         StringRequest stringRequest = new AuthentificationRequest(Request.Method.POST, url, null, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
+                Log.e("Une erreur chiante", volleyError.toString());
                 if(volleyError != null && volleyError.networkResponse.statusCode == 409){
                     Log.e("ERROR 409", "ERROR 409");
                     ItemClickListener.this.sessionId = volleyError.networkResponse.headers.get("X-Transmission-Session-Id");

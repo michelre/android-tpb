@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
@@ -33,8 +34,6 @@ public class SearchableActivity extends ListActivity{
         getActionBar().setDisplayUseLogoEnabled(false);
         setContentView(R.layout.activity_searchable);
         this.progressDialog = ProgressDialog.show(this, "", "Searching torrents...", true, false);
-        this.titleListView = (TextView)this.findViewById(R.id.title_list_view);
-        this.titleListView.setText("Page 1");
         this.previousButton = (Button)this.findViewById(R.id.prev);
         this.previousButton.setEnabled(false);
         this.nextButton = (Button)this.findViewById(R.id.next);
@@ -65,7 +64,6 @@ public class SearchableActivity extends ListActivity{
             else
                 this.previousButton.setEnabled(true);
         }
-        this.updateTitle(view);
     }
 
     public void clickNextButton(View view){
@@ -73,11 +71,6 @@ public class SearchableActivity extends ListActivity{
         this.showProgressDialog();
         this.currentPage += 1;
         this.doSearch();
-        this.updateTitle(view);
-    }
-
-    public void updateTitle(View view){
-        this.titleListView.setText("Page " + String.valueOf(this.currentPage + 1));
     }
 
     public void doSearch() {
@@ -90,6 +83,7 @@ public class SearchableActivity extends ListActivity{
                         String url = "http://90.42.184.170:9001/torrents/search?q=" + URLEncoder.encode(SearchableActivity.this.query, "UTF-8") + "&offset=" + SearchableActivity.this.currentPage;
                         //String url = "http://192.168.1.17:9001/search?query=" + URLEncoder.encode(SearchableActivity.this.query, "UTF-8") + "&offset=" + SearchableActivity.this.currentPage;
                         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new ResponseSearchListener(SearchableActivity.this), new ErrorResponseSearchListener(SearchableActivity.this));
+                        jsonArrayRequest.setRetryPolicy(new DefaultRetryPolicy(30000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
                         queue.add(jsonArrayRequest);
                     } catch (UnsupportedEncodingException e) {}
                 }
@@ -140,7 +134,6 @@ public class SearchableActivity extends ListActivity{
     private Torrents currentListTorrents = new Torrents(new Torrent("", "", ""));
     private int currentPage = 0;
     private String query = "";
-    private TextView titleListView;
     private Button previousButton;
     private Button nextButton;
 }

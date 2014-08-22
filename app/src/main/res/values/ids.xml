@@ -2,4 +2,5 @@
 <resources>
     <item name="torrent_title" type="id" />
     <item name="torrent_size" type="id" />
+    <item name="download_icon" type="id" />
 </resources>

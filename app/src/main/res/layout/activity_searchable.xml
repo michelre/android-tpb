@@ -9,16 +9,6 @@
     tools:context="com.remimichel.activities.SearchableActivity"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/title_list_view"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@android:color/black"
-        android:gravity="center"
-        android:textSize="16sp"
-        android:background="@android:color/darker_gray"
-        android:padding="10dp"/>
-
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -32,16 +22,19 @@
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dip"
         android:orientation="horizontal" >
 
         <Button
             android:id="@+id/prev"
             android:text="Prev"
+            android:layout_marginRight="3sp"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:onClick="clickPreviousButton"/>
+            android:onClick="clickPreviousButton"
+            android:background="@drawable/custom_btn_shakespeare"
+            style="@style/btnStyleShakespeare"/>
 
         <Button
             android:id="@+id/next"
@@ -49,6 +42,8 @@
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:onClick="clickNextButton"/>
+            android:onClick="clickNextButton"
+            android:background="@drawable/custom_btn_shakespeare"
+            style="@style/btnStyleShakespeare"/>
     </LinearLayout>
 </LinearLayout>
