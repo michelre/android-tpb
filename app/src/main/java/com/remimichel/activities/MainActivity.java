@@ -20,6 +20,7 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
+import com.remimichel.adapters.CategoriesAdapter;
 import com.remimichel.utils.Category;
 import org.json.JSONObject;
 
@@ -31,6 +32,7 @@ import java.util.List;
 public class MainActivity extends ListActivity implements AdapterView.OnItemClickListener {
 
     private Category rootCategory;
+    private List<Category> noClickableCategories = new ArrayList<Category>();
     private List<Category> categoriesToDisplay;
 
     @Override
@@ -50,10 +52,12 @@ public class MainActivity extends ListActivity implements AdapterView.OnItemClic
             @Override
             public void onResponse(JSONObject jsonObject) {
                 MainActivity.this.rootCategory = new Gson().fromJson(String.valueOf(jsonObject), Category.class);
-                MainActivity.this.categoriesToDisplay = new ArrayList<Category>(MainActivity.this.rootCategory.getCategories());
-                ArrayAdapter<Category> adapter = new ArrayAdapter<Category>(MainActivity.this, android.R.layout.simple_list_item_1, MainActivity.this.categoriesToDisplay);
+                //MainActivity.this.categoriesToDisplay = new ArrayList<Category>(MainActivity.this.rootCategory.getCategories());
+                //ArrayAdapter<Category> adapter = new ArrayAdapter<Category>(MainActivity.this, R.layout.no_clickable_category, MainActivity.this.categoriesToDisplay);
+                MainActivity.this.setNoClickableCategories();
+                CategoriesAdapter adapter = new CategoriesAdapter(MainActivity.this.rootCategory, MainActivity.this);
                 MainActivity.this.setListAdapter(adapter);
-                MainActivity.this.getListView().setOnItemClickListener(MainActivity.this);
+                //MainActivity.this.getListView().setOnItemClickListener(MainActivity.this);
 
             }
         }, null);
@@ -61,6 +65,20 @@ public class MainActivity extends ListActivity implements AdapterView.OnItemClic
 
     }
 
+    private void setNoClickableCategories(ArrayList<Category> categories, ArrayList<Category> acc) {
+        if(categories.size() != 0){
+            this.setNoClickableCategories();
+        }
+
+
+        for(Category c: this.rootCategory.getCategories()){
+            if(c.getCategories().size() != 0){
+                this.noClickableCategories.add(c);
+            }
+        }
+    }
+
+    private void setClick
 
 
     @Override
