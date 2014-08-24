@@ -43,43 +43,27 @@ public class MainActivity extends ListActivity implements AdapterView.OnItemClic
         getActionBar().setDisplayUseLogoEnabled(false);
 
         setContentView(R.layout.activity_main);
-        this.findAllCategories();
+        this.findCategories("CATEGORIES", 1);
     }
 
-    private void findAllCategories() {
+    private void findCategories(String childrenOf, int depth) {
         RequestQueue queue = Volley.newRequestQueue(this);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("http://90.42.184.170:9001/categories", null, new Response.Listener<JSONObject>() {
+        //JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("http://90.42.184.170:9001/categories?childrenOf="+childrenOf+"depth="+depth, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("http://192.168.0.14:9001/categories?children_of="+childrenOf+"&depth="+depth, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
                 MainActivity.this.rootCategory = new Gson().fromJson(String.valueOf(jsonObject), Category.class);
                 //MainActivity.this.categoriesToDisplay = new ArrayList<Category>(MainActivity.this.rootCategory.getCategories());
                 //ArrayAdapter<Category> adapter = new ArrayAdapter<Category>(MainActivity.this, R.layout.no_clickable_category, MainActivity.this.categoriesToDisplay);
-                MainActivity.this.setNoClickableCategories();
                 CategoriesAdapter adapter = new CategoriesAdapter(MainActivity.this.rootCategory, MainActivity.this);
                 MainActivity.this.setListAdapter(adapter);
-                //MainActivity.this.getListView().setOnItemClickListener(MainActivity.this);
+                MainActivity.this.getListView().setOnItemClickListener(MainActivity.this);
 
             }
         }, null);
         queue.add(jsonObjectRequest);
 
     }
-
-    private void setNoClickableCategories(ArrayList<Category> categories, ArrayList<Category> acc) {
-        if(categories.size() != 0){
-            this.setNoClickableCategories();
-        }
-
-
-        for(Category c: this.rootCategory.getCategories()){
-            if(c.getCategories().size() != 0){
-                this.noClickableCategories.add(c);
-            }
-        }
-    }
-
-    private void setClick
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -115,10 +99,6 @@ public class MainActivity extends ListActivity implements AdapterView.OnItemClic
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        if(!this.rootCategory.getCategories().isEmpty()){
-            this.makeListToDisplay(this.categoriesToDisplay.get(i));
-            ArrayAdapter<Category> adapter = new ArrayAdapter<Category>(MainActivity.this, android.R.layout.simple_list_item_1, this.categoriesToDisplay);
-            this.setListAdapter(adapter);
-        }
+        this.findCategories(this.rootCategory.getCategories().get(i).getPath(), 1);
     }
 }

@@ -10,7 +10,8 @@ public class Category implements Comparable<Category>{
         return this.name;
     }
 
-    public Category(String name, List<Category> categories) {
+    public Category(String path, String name, List<Category> categories) {
+        this.path = path;
         this.name = name;
         this.categories = categories;
     }
@@ -31,6 +32,15 @@ public class Category implements Comparable<Category>{
         this.categories = categories;
     }
 
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    private String path;
     private String name;
     private List<Category> categories;
 
