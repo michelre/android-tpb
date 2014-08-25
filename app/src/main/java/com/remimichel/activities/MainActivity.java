@@ -32,8 +32,10 @@ import java.util.List;
 public class MainActivity extends ListActivity implements AdapterView.OnItemClickListener {
 
     private Category rootCategory;
-    private List<Category> noClickableCategories = new ArrayList<Category>();
     private List<Category> categoriesToDisplay;
+    private int firstIndex;
+    private int lastIndex;
+    private int indexOfClick;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,21 +50,40 @@ public class MainActivity extends ListActivity implements AdapterView.OnItemClic
 
     private void findCategories(String childrenOf, int depth) {
         RequestQueue queue = Volley.newRequestQueue(this);
-        //JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("http://90.42.184.170:9001/categories?childrenOf="+childrenOf+"depth="+depth, null, new Response.Listener<JSONObject>() {
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("http://192.168.0.14:9001/categories?children_of="+childrenOf+"&depth="+depth, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("http://90.42.143.2:9001/categories?children_of="+childrenOf+"&depth="+depth, null, new Response.Listener<JSONObject>() {
+        //JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("http://192.168.0.14:9001/categories?children_of="+childrenOf+"&depth="+depth, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
-                MainActivity.this.rootCategory = new Gson().fromJson(String.valueOf(jsonObject), Category.class);
+                //MainActivity.this.rootCategory = new Gson().fromJson(String.valueOf(jsonObject), Category.class);
+                Category category = new Gson().fromJson(String.valueOf(jsonObject), Category.class);
+                if(category.isHasChildren().booleanValue()){
+                    MainActivity.this.setCategoriesToDisplay(category);
+                    CategoriesAdapter adapter = new CategoriesAdapter(MainActivity.this.categoriesToDisplay, MainActivity.this);
+                    MainActivity.this.setListAdapter(adapter);
+                    MainActivity.this.getListView().setOnItemClickListener(MainActivity.this);
+                }
                 //MainActivity.this.categoriesToDisplay = new ArrayList<Category>(MainActivity.this.rootCategory.getCategories());
                 //ArrayAdapter<Category> adapter = new ArrayAdapter<Category>(MainActivity.this, R.layout.no_clickable_category, MainActivity.this.categoriesToDisplay);
-                CategoriesAdapter adapter = new CategoriesAdapter(MainActivity.this.rootCategory, MainActivity.this);
-                MainActivity.this.setListAdapter(adapter);
-                MainActivity.this.getListView().setOnItemClickListener(MainActivity.this);
 
             }
         }, null);
         queue.add(jsonObjectRequest);
 
+    }
+
+    private void setCategoriesToDisplay(Category category){
+        if(this.categoriesToDisplay == null){
+            this.categoriesToDisplay = new ArrayList<Category>(category.getCategories());
+            this.firstIndex = 0;
+            this.lastIndex = 0;
+        }else{
+            if(this.firstIndex != 0 && this.lastIndex != 0){
+                this.categoriesToDisplay.subList(this.firstIndex, this.lastIndex).clear();
+            }
+            this.firstIndex = (this.indexOfClick > (this.lastIndex - this.firstIndex)) ? this.indexOfClick - (this.lastIndex - this.firstIndex) + 1 : this.indexOfClick + 1;
+            this.lastIndex = category.getCategories().size() + this.firstIndex;
+            this.categoriesToDisplay.addAll(this.firstIndex, category.getCategories());
+        }
     }
 
     @Override
@@ -99,6 +120,7 @@ public class MainActivity extends ListActivity implements AdapterView.OnItemClic
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        this.findCategories(this.rootCategory.getCategories().get(i).getPath(), 1);
+        this.indexOfClick = i;
+        this.findCategories(this.categoriesToDisplay.get(i).getPath(), 1);
     }
 }

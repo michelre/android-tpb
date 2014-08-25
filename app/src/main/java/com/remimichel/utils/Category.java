@@ -2,6 +2,7 @@ package com.remimichel.utils;
 
 import java.util.Collection;
 import java.util.List;
+import com.google.gson.annotations.SerializedName;
 
 public class Category implements Comparable<Category>{
 
@@ -10,9 +11,10 @@ public class Category implements Comparable<Category>{
         return this.name;
     }
 
-    public Category(String path, String name, List<Category> categories) {
+    public Category(String path, Boolean hasChildren, String name, List<Category> categories) {
         this.path = path;
         this.name = name;
+        this.hasChildren = hasChildren;
         this.categories = categories;
     }
 
@@ -40,8 +42,24 @@ public class Category implements Comparable<Category>{
         this.path = path;
     }
 
+    public Boolean isHasChildren() {
+        return hasChildren;
+    }
+
+    public void setHasChildren(Boolean hasChildren) {
+        this.hasChildren = hasChildren;
+    }
+
+    @SerializedName("has_children")
+    private Boolean hasChildren;
+
+    @SerializedName("path")
     private String path;
+
+    @SerializedName("name")
     private String name;
+
+    @SerializedName("categories")
     private List<Category> categories;
 
     @Override

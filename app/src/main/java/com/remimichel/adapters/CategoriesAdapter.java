@@ -17,18 +17,19 @@ import java.util.List;
 public class CategoriesAdapter extends BaseAdapter {
 
     private Activity activity;
-    private Category rootCategory;
+    //private Category rootCategory;
+    private List<Category> categories;
     private LayoutInflater inflater;
 
-    public CategoriesAdapter(Category rootCategory, Activity activity){
+    public CategoriesAdapter(List<Category> categories, Activity activity){
         this.activity = activity;
-        this.rootCategory = rootCategory;
+        this.categories = categories;
         this.inflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
     public int getCount() {
-        return this.rootCategory.getCategories().size();
+        return this.categories.size();
     }
 
     @Override
@@ -45,7 +46,7 @@ public class CategoriesAdapter extends BaseAdapter {
     public View getView(int i, View view, ViewGroup viewGroup) {
         view = inflater.inflate(R.layout.no_clickable_category, null);
         TextView categoryName = (TextView)view.findViewById(R.id.category_name);
-        categoryName.setText(this.rootCategory.getCategories().get(i).getName());
+        categoryName.setText(this.categories.get(i).getName());
         return view;
     }
 }
