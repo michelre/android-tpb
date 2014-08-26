@@ -19,6 +19,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.remimichel.adapters.CategoriesAdapter;
+import com.remimichel.utils.Categories;
 import com.remimichel.utils.Category;
 import org.json.JSONObject;
 
@@ -28,7 +29,10 @@ import java.util.List;
 
 public class MainActivity extends ListActivity implements AdapterView.OnItemClickListener {
 
-    private List<Category> categories;
+    public final static String CATEGORY_SELECTED = "CATEGORY_SELECTED";
+
+    //private List<Category> categories;
+    private Categories categories;
     private int firstIndex;
     private int lastIndex;
     private int indexOfClick;
@@ -46,8 +50,9 @@ public class MainActivity extends ListActivity implements AdapterView.OnItemClic
 
     private void findCategories(String childrenOf, int depth) {
         RequestQueue queue = Volley.newRequestQueue(this);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("http://92.129.43.179:9001/categories?children_of="+childrenOf+"&depth="+depth, null, new Response.Listener<JSONObject>() {
-        //JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("http://192.168.0.14:9001/categories?children_of="+childrenOf+"&depth="+depth, null, new Response.Listener<JSONObject>() {
+        //JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("http://92.129.43.179:9001/categories?children_of="+childrenOf+"&depth="+depth, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("http://192.168.1.17:9001/categories?children_of="+childrenOf+"&depth="+depth, null, new Response.Listener<JSONObject>() {
+            //JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("http://192.168.0.14:9001/categories?children_of="+childrenOf+"&depth="+depth, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
             Category category = new Gson().fromJson(String.valueOf(jsonObject), Category.class);
@@ -66,7 +71,8 @@ public class MainActivity extends ListActivity implements AdapterView.OnItemClic
 
     private void setCategories(Category category){
         if(this.categories == null){
-            this.categories = new ArrayList<Category>(category.getCategories());
+            //this.categories = new ArrayList<Category>(category.getCategories());
+            this.categories = new Categories(category.getCategories());
             this.firstIndex = 0;
             this.lastIndex = 0;
         }else{
@@ -106,12 +112,19 @@ public class MainActivity extends ListActivity implements AdapterView.OnItemClic
     }
 
     @Override
+    public void onSaveInstanceState(Bundle saveInstance){
+        saveInstance.putParcelable("Categories", this.categories);
+    }
+
+    @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         this.indexOfClick = i;
         if(this.categories.get(i).isHasChildren())
             this.findCategories(this.categories.get(i).getPath(), 1);
-        else
-            Log.e("", "New activity here");
-            ;//New intent + start activity
+        else{
+            Intent intent = new Intent(this, TopActivity.class);
+            intent.putExtra(CATEGORY_SELECTED, this.categories.get(i).getPath());
+            startActivity(intent);
+        }
     }
 }

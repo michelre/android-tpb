@@ -1,10 +1,13 @@
 package com.remimichel.utils;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.Collection;
 import java.util.List;
 import com.google.gson.annotations.SerializedName;
 
-public class Category implements Comparable<Category>{
+public class Category implements Comparable<Category>, Parcelable{
 
     @Override
     public String toString(){
@@ -68,5 +71,36 @@ public class Category implements Comparable<Category>{
             return this.name.compareTo(category.name);
         }
         return -1;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel out, int i) {
+        out.writeString(this.path);
+        out.writeByte((byte) (this.hasChildren ? 1 : 0));
+        out.writeString(this.name);
+        out.writeTypedList(this.categories);
+    }
+
+    public static final Parcelable.Creator<Category> CREATOR
+            = new Parcelable.Creator<Category>() {
+        public Category createFromParcel(Parcel in) {
+            return new Category(in);
+        }
+
+        public Category[] newArray(int size) {
+            return new Category[size];
+        }
+    };
+
+    private Category(Parcel in) {
+        this.path = in.readString();
+        this.hasChildren = in.readByte() != 0;
+        this.name = in.readString();
+        in.readTypedList(this.categories, Category.CREATOR);
     }
 }

@@ -1,5 +1,6 @@
 package com.remimichel.listeners;
 
+import android.app.ListActivity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,9 +15,9 @@ import com.remimichel.activities.SearchableActivity;
 
 public class ErrorResponseSearchListener implements Response.ErrorListener{
 
-    private SearchableActivity activity;
+    private ListActivity activity;
 
-    public ErrorResponseSearchListener(SearchableActivity activity){
+    public ErrorResponseSearchListener(ListActivity activity){
         this.activity = activity;
     }
 
