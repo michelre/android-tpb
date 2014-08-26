@@ -2,9 +2,11 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="45dp"
-    android:background="#ffa2a9a4">
+    android:minHeight="45dp"
+    android:background="@android:color/background_dark">
     <TextView
         android:id="@+id/category_name"
+        android:textColor="#fffdfdfd"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:text="APPLICATION"

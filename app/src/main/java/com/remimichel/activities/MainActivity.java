@@ -11,8 +11,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.SearchView;
 
 import com.android.volley.RequestQueue;
@@ -25,14 +23,12 @@ import com.remimichel.utils.Category;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 
 public class MainActivity extends ListActivity implements AdapterView.OnItemClickListener {
 
-    private Category rootCategory;
-    private List<Category> categoriesToDisplay;
+    private List<Category> categories;
     private int firstIndex;
     private int lastIndex;
     private int indexOfClick;
@@ -50,20 +46,17 @@ public class MainActivity extends ListActivity implements AdapterView.OnItemClic
 
     private void findCategories(String childrenOf, int depth) {
         RequestQueue queue = Volley.newRequestQueue(this);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("http://90.42.143.2:9001/categories?children_of="+childrenOf+"&depth="+depth, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("http://92.129.43.179:9001/categories?children_of="+childrenOf+"&depth="+depth, null, new Response.Listener<JSONObject>() {
         //JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("http://192.168.0.14:9001/categories?children_of="+childrenOf+"&depth="+depth, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
-                //MainActivity.this.rootCategory = new Gson().fromJson(String.valueOf(jsonObject), Category.class);
-                Category category = new Gson().fromJson(String.valueOf(jsonObject), Category.class);
-                if(category.isHasChildren().booleanValue()){
-                    MainActivity.this.setCategoriesToDisplay(category);
-                    CategoriesAdapter adapter = new CategoriesAdapter(MainActivity.this.categoriesToDisplay, MainActivity.this);
-                    MainActivity.this.setListAdapter(adapter);
-                    MainActivity.this.getListView().setOnItemClickListener(MainActivity.this);
-                }
-                //MainActivity.this.categoriesToDisplay = new ArrayList<Category>(MainActivity.this.rootCategory.getCategories());
-                //ArrayAdapter<Category> adapter = new ArrayAdapter<Category>(MainActivity.this, R.layout.no_clickable_category, MainActivity.this.categoriesToDisplay);
+            Category category = new Gson().fromJson(String.valueOf(jsonObject), Category.class);
+            if(category.isHasChildren().booleanValue()){
+                MainActivity.this.setCategories(category);
+                CategoriesAdapter adapter = new CategoriesAdapter(MainActivity.this.categories, MainActivity.this);
+                MainActivity.this.setListAdapter(adapter);
+            }
+            MainActivity.this.getListView().setOnItemClickListener(MainActivity.this);
 
             }
         }, null);
@@ -71,18 +64,22 @@ public class MainActivity extends ListActivity implements AdapterView.OnItemClic
 
     }
 
-    private void setCategoriesToDisplay(Category category){
-        if(this.categoriesToDisplay == null){
-            this.categoriesToDisplay = new ArrayList<Category>(category.getCategories());
+    private void setCategories(Category category){
+        if(this.categories == null){
+            this.categories = new ArrayList<Category>(category.getCategories());
             this.firstIndex = 0;
             this.lastIndex = 0;
         }else{
-            if(this.firstIndex != 0 && this.lastIndex != 0){
-                this.categoriesToDisplay.subList(this.firstIndex, this.lastIndex).clear();
+            if(this.firstIndex != 0 && this.lastIndex != 0) this.categories.subList(this.firstIndex, this.lastIndex).clear();
+            if(this.firstIndex != this.indexOfClick + 1){
+                this.firstIndex = (this.indexOfClick > (this.lastIndex - this.firstIndex)) ? this.indexOfClick - (this.lastIndex - this.firstIndex) + 1 : this.indexOfClick + 1;
+                this.lastIndex = category.getCategories().size() + this.firstIndex;
+                this.categories.addAll(this.firstIndex, category.getCategories());
+            }else{
+                this.firstIndex = 0;
+                this.lastIndex = 0;
             }
-            this.firstIndex = (this.indexOfClick > (this.lastIndex - this.firstIndex)) ? this.indexOfClick - (this.lastIndex - this.firstIndex) + 1 : this.indexOfClick + 1;
-            this.lastIndex = category.getCategories().size() + this.firstIndex;
-            this.categoriesToDisplay.addAll(this.firstIndex, category.getCategories());
+
         }
     }
 
@@ -108,19 +105,13 @@ public class MainActivity extends ListActivity implements AdapterView.OnItemClic
         return super.onOptionsItemSelected(item);
     }
 
-    public void makeListToDisplay(Category category){
-        this.categoriesToDisplay.clear();
-        for(Category c: this.rootCategory.getCategories()){
-            this.categoriesToDisplay.add(c);
-            if(category.compareTo(c) == 0){
-                this.categoriesToDisplay.addAll(c.getCategories());
-            }
-        }
-    }
-
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         this.indexOfClick = i;
-        this.findCategories(this.categoriesToDisplay.get(i).getPath(), 1);
+        if(this.categories.get(i).isHasChildren())
+            this.findCategories(this.categories.get(i).getPath(), 1);
+        else
+            Log.e("", "New activity here");
+            ;//New intent + start activity
     }
 }
