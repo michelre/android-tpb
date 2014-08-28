@@ -59,7 +59,7 @@ public class SearchableActivity extends ListActivity {
                 this.setLoading(true);
                 RequestQueue queue = Volley.newRequestQueue(SearchableActivity.this);
                 //String url = "http://90.42.184.170:9001/torrents/search?q=" + URLEncoder.encode(SearchableActivity.this.query, "UTF-8") + "&offset=" + SearchableActivity.this.currentPage;
-                String url = "http://192.168.1.17:9001/torrents/search?q=" + URLEncoder.encode(SearchableActivity.this.query, "UTF-8") + "&offset=" + SearchableActivity.this.currentPage;
+                String url = "http://82.122.122.250:9001/torrents/search?q=" + URLEncoder.encode(SearchableActivity.this.query, "UTF-8") + "&offset=" + SearchableActivity.this.currentPage;
                 JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray jsonArray) {
@@ -116,6 +116,10 @@ public class SearchableActivity extends ListActivity {
         }
         if (id == R.id.action_settings) {
             Intent intent = new Intent(this, SettingActivity.class);
+            startActivity(intent);
+        }
+        if( id == R.id.action_download){
+            Intent intent = new Intent(this, DownloadActivity.class);
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);

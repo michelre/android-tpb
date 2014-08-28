@@ -21,6 +21,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.remimichel.adapters.CategoriesAdapter;
 import com.remimichel.adapters.SearchAdapter;
 import com.remimichel.listeners.ErrorResponseSearchListener;
 import com.remimichel.listeners.ScrollSearchListener;
@@ -46,7 +47,8 @@ public class TopActivity extends ListActivity {
         this.progressDialog = ProgressDialog.show(this, "", "Searching torrents...", true, false);
         this.torrents = new ArrayList<Torrent>();
         Intent intent = getIntent();
-        this.doSearch(intent.getStringExtra(MainActivity.CATEGORY_SELECTED));
+        if(savedInstanceState == null)
+            this.doSearch(intent.getStringExtra(MainActivity.CATEGORY_SELECTED));
     }
 
     public void doSearch(String categoryPath) {
@@ -54,7 +56,7 @@ public class TopActivity extends ListActivity {
             this.setLoading(true);
             RequestQueue queue = Volley.newRequestQueue(TopActivity.this);
             //String url = "http://90.42.184.170:9001/torrents/search?q=" + URLEncoder.encode(SearchableActivity.this.query, "UTF-8") + "&offset=" + SearchableActivity.this.currentPage;
-            String url = "http://192.168.1.17:9001/torrents/top/" + categoryPath;
+            String url = "http://82.122.122.250:9001/torrents/top/" + categoryPath;
             JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
                 @Override
                 public void onResponse(JSONArray jsonArray) {
@@ -103,7 +105,23 @@ public class TopActivity extends ListActivity {
             Intent intent = new Intent(this, SettingActivity.class);
             startActivity(intent);
         }
+        if( id == R.id.action_download){
+            Intent intent = new Intent(this, DownloadActivity.class);
+            startActivity(intent);
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle saveInstance){
+        saveInstance.putParcelableArrayList("torrents", this.torrents);
+        super.onSaveInstanceState(saveInstance);
+    }
+
+    protected void onRestoreInstanceState(Bundle savedInstanceState){
+        ArrayList<Torrent> torrents = savedInstanceState.getParcelableArrayList("torrents");
+        TopActivity.this.updateListView(torrents);
+        super.onRestoreInstanceState(savedInstanceState);
     }
 
     public boolean isLoading() {

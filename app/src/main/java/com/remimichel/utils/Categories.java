@@ -2,6 +2,7 @@ package com.remimichel.utils;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -21,8 +22,8 @@ public class Categories extends ArrayList<Category> implements Parcelable{
     }
 
     @Override
-    public void writeToParcel(Parcel parcel, int i) {
-
+    public void writeToParcel(Parcel out, int i) {
+        out.writeTypedList(this);
     }
 
     public static final Parcelable.Creator<Categories> CREATOR

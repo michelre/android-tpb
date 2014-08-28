@@ -5,6 +5,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
@@ -21,10 +22,14 @@ import com.google.gson.Gson;
 import com.remimichel.adapters.CategoriesAdapter;
 import com.remimichel.utils.Categories;
 import com.remimichel.utils.Category;
+import com.remimichel.utils.DownloadsInfoTask;
+
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 
 public class MainActivity extends ListActivity implements AdapterView.OnItemClickListener {
@@ -43,16 +48,19 @@ public class MainActivity extends ListActivity implements AdapterView.OnItemClic
         PreferenceManager.setDefaultValues(this, R.xml.settings, false);
         getActionBar().setDisplayShowTitleEnabled(false);
         getActionBar().setDisplayUseLogoEnabled(false);
-
         setContentView(R.layout.activity_main);
-        this.findCategories("CATEGORIES", 1);
+        if(savedInstanceState == null){
+            this.findCategories("CATEGORIES", 1);
+        }
+
+        ScheduledThreadPoolExecutor scheduledThread = new ScheduledThreadPoolExecutor(1);
+        //scheduledThread.scheduleWithFixedDelay(new DownloadsInfoTask(), 0, 1, TimeUnit.SECONDS);
     }
 
     private void findCategories(String childrenOf, int depth) {
         RequestQueue queue = Volley.newRequestQueue(this);
-        //JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("http://92.129.43.179:9001/categories?children_of="+childrenOf+"&depth="+depth, null, new Response.Listener<JSONObject>() {
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("http://192.168.1.17:9001/categories?children_of="+childrenOf+"&depth="+depth, null, new Response.Listener<JSONObject>() {
-            //JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("http://192.168.0.14:9001/categories?children_of="+childrenOf+"&depth="+depth, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("http://82.122.122.250:9001/categories?children_of="+childrenOf+"&depth="+depth, null, new Response.Listener<JSONObject>() {
+        //JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("http://192.168.1.17:9001/categories?children_of="+childrenOf+"&depth="+depth, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
             Category category = new Gson().fromJson(String.valueOf(jsonObject), Category.class);
@@ -85,7 +93,6 @@ public class MainActivity extends ListActivity implements AdapterView.OnItemClic
                 this.firstIndex = 0;
                 this.lastIndex = 0;
             }
-
         }
     }
 
@@ -108,12 +115,31 @@ public class MainActivity extends ListActivity implements AdapterView.OnItemClic
             Intent intent = new Intent(this, SettingActivity.class);
             startActivity(intent);
         }
+        if( id == R.id.action_download){
+            Intent intent = new Intent(this, DownloadActivity.class);
+            startActivity(intent);
+        }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public void onSaveInstanceState(Bundle saveInstance){
-        saveInstance.putParcelable("Categories", this.categories);
+    protected void onSaveInstanceState(Bundle saveInstance){
+        saveInstance.putInt("firstIndex", this.firstIndex);
+        saveInstance.putInt("lastIndex", this.lastIndex);
+        saveInstance.putInt("indexOfClick", this.indexOfClick);
+        saveInstance.putParcelable("categories", this.categories);
+        super.onSaveInstanceState(saveInstance);
+    }
+
+    protected void onRestoreInstanceState(Bundle savedInstanceState){
+        super.onRestoreInstanceState(savedInstanceState);
+        this.categories = savedInstanceState.getParcelable("categories");
+        CategoriesAdapter adapter = new CategoriesAdapter(this.categories, this);
+        this.setListAdapter(adapter);
+        this.getListView().setOnItemClickListener(MainActivity.this);
+        this.firstIndex = savedInstanceState.getInt("firstIndex");
+        this.lastIndex = savedInstanceState.getInt("lastIndex");
+        this.indexOfClick = savedInstanceState.getInt("indexOfClick");
     }
 
     @Override

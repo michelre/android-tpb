@@ -17,5 +17,7 @@
     <string name="setting_password">Password</string>
     <string name="loading">loading</string>
     <string name="top_activity">Top</string>
+    <string name="action_download">action_download</string>
+    <string name="download_activity">download_activity</string>
 
 </resources>
