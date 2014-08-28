@@ -6,10 +6,8 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ListView;
 import android.widget.SearchView;
 
@@ -21,18 +19,14 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.remimichel.adapters.CategoriesAdapter;
 import com.remimichel.adapters.SearchAdapter;
 import com.remimichel.listeners.ErrorResponseSearchListener;
-import com.remimichel.listeners.ScrollSearchListener;
-import com.remimichel.utils.Torrent;
-import com.remimichel.utils.TorrentDeserializer;
+import com.remimichel.model.Torrent;
+import com.remimichel.deserializers.TorrentDeserializer;
 
 import org.json.JSONArray;
 
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 

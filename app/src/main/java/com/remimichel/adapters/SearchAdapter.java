@@ -2,20 +2,14 @@ package com.remimichel.adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ListAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.remimichel.activities.R;
-import com.remimichel.activities.SearchableActivity;
-import com.remimichel.utils.Torrent;
+import com.remimichel.model.Torrent;
 
 import java.util.List;
 

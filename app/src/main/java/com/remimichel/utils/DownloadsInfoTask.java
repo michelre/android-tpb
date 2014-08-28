@@ -1,7 +1,5 @@
 package com.remimichel.utils;
 
-import android.app.Activity;
-import android.app.ListActivity;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -17,7 +15,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.remimichel.activities.DownloadActivity;
-import com.remimichel.adapters.DownloadsAdapter;
+import com.remimichel.deserializers.DownloadDeserializer;
+import com.remimichel.model.Download;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,7 +48,7 @@ public class DownloadsInfoTask implements Runnable {
         try {
             RequestQueue queue = Volley.newRequestQueue(this.activity);
             String url = "http://82.122.122.250:9091/transmission/rpc";
-            JSONObject jsonObject = new JSONObject("{\"method\":\"torrent-get\", \"arguments\":{\"fields\":[\"name\", \"id\", \"percentDone\"]}}");
+            JSONObject jsonObject = new JSONObject("{\"method\":\"torrent-get\", \"arguments\":{\"fields\":[\"name\", \"id\", \"percentDone\", \"rateDownload\", \"rateUpload\"]}}");
             JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject jsonArray) {
@@ -58,12 +57,7 @@ public class DownloadsInfoTask implements Runnable {
                         Type collectionType = new TypeToken<Collection<Download>>() {
                         }.getType();
                         ArrayList<Download> downloads = new ArrayList<Download>((Collection<Download>) gson.fromJson(jsonArray.getJSONObject("arguments").getJSONArray("torrents").toString(), collectionType));
-                        if(DownloadsInfoTask.this.activity.getAdapter() != null){
-                            Log.e("Main", "notifyDataSetChanged() now");
-                            DownloadsInfoTask.this.activity.getAdapter().updateDownloadsList(downloads);
-                        }
-                        //DownloadsInfoTask.this.saveScrollPosition();
-                        //DownloadsInfoTask.this.activity.getListView().setSelectionFromTop(DownloadsInfoTask.this.index, DownloadsInfoTask.this.top);
+                        DownloadsInfoTask.this.activity.getAdapter().updateDownloadsList(downloads);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -81,7 +75,7 @@ public class DownloadsInfoTask implements Runnable {
                             + Base64.encodeToString(("pi:ixe7yiem").getBytes(),
                             Base64.NO_WRAP);
                     headers.put("Authorization", auth);
-                    headers.put("X-Transmission-Session-Id", "UNDdmK0n7fIYa74h3l8kmFkFCuD3Ox567jbr84mfzCDFj1l3");
+                    headers.put("X-Transmission-Session-Id", "biAxTijLz4YbRq5qQZmuttpbZn2FLVu3dvvHXSoAxpPRs4Lc");
                     return headers;
                 }
 

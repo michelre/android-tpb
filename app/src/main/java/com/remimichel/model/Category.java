@@ -1,9 +1,8 @@
-package com.remimichel.utils;
+package com.remimichel.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.Collection;
 import java.util.List;
 import com.google.gson.annotations.SerializedName;
 

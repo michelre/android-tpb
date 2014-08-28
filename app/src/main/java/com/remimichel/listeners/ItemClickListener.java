@@ -14,7 +14,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.remimichel.utils.Torrent;
+import com.remimichel.model.Torrent;
 import com.remimichel.utils.Torrents;
 import com.remimichel.requests.AuthentificationRequest;
 import com.remimichel.requests.TorrentAddJsonObjectRequest;

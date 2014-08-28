@@ -2,8 +2,6 @@ package com.remimichel.adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,11 +9,9 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.remimichel.activities.R;
-import com.remimichel.utils.Category;
-import com.remimichel.utils.Torrent;
+import com.remimichel.model.Category;
 
 import java.util.List;
-import java.util.Locale;
 
 public class CategoriesAdapter extends BaseAdapter {
 

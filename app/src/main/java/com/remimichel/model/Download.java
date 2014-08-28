@@ -1,18 +1,15 @@
-package com.remimichel.utils;
-
-import android.os.Parcel;
-import android.os.Parcelable;
+package com.remimichel.model;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
+public class Download implements Comparable<Download> {
 
-public class Download implements Comparable<Download>{
-
-    public Download(int id, String name, float percentDone) {
+    public Download(int id, String name, float percentDone, int rateDownload, int rateUpload) {
         this.id = id;
         this.name = name;
         this.percentDone = percentDone;
+        this.rateDownload = rateDownload;
+        this.rateUpload = rateUpload;
     }
 
     @Override
@@ -44,10 +41,22 @@ public class Download implements Comparable<Download>{
         this.percentDone = percentDone;
     }
 
+    public int getRateDownload() {
+        return this.rateDownload;
+    }
+
+    public int getRateUpload() {
+        return this.rateUpload;
+    }
+
     @SerializedName("id")
     private int id;
     @SerializedName("name")
     private String name;
     @SerializedName("percentDone")
     private float percentDone;
+    @SerializedName("rateDownload")
+    private int rateDownload;
+    @SerializedName("rateUpload")
+    private int rateUpload;
 }

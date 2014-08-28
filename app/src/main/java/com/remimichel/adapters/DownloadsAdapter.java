@@ -2,15 +2,17 @@ package com.remimichel.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.remimichel.activities.R;
-import com.remimichel.utils.Category;
-import com.remimichel.utils.Download;
+import com.remimichel.model.Download;
 
 import java.util.List;
 
@@ -45,9 +47,13 @@ public class DownloadsAdapter extends BaseAdapter {
     public View getView(int i, View view, ViewGroup viewGroup) {
         view = inflater.inflate(R.layout.download_item, null);
         TextView downloadName = (TextView)view.findViewById(R.id.download_name);
-        TextView downloadPercentDone = (TextView)view.findViewById(R.id.download_percent_done);
+        TextView downloadRate = (TextView)view.findViewById(R.id.download_download_rate);
+        TextView uploadRate = (TextView)view.findViewById(R.id.download_upload_rate);
+        ProgressBar downloadPercentDone = (ProgressBar)view.findViewById(R.id.download_percent_done);
         downloadName.setText(this.downloads.get(i).getName());
-        downloadPercentDone.setText(String.valueOf(this.downloads.get(i).getPercentDone()*100)+"%");
+        downloadRate.setText(downloadRate.getText() + " " + this.downloads.get(i).getRateDownload() / 1000 + "kB/s");
+        uploadRate.setText(uploadRate.getText() + " " + this.downloads.get(i).getRateUpload() / 1000 + "kB/s");
+        downloadPercentDone.setProgress(Math.round(this.downloads.get(i).getPercentDone() * 100));
         return view;
     }
 

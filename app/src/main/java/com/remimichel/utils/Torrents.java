@@ -1,5 +1,7 @@
 package com.remimichel.utils;
 
+import com.remimichel.model.Torrent;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;

@@ -22,8 +22,8 @@ import com.google.gson.reflect.TypeToken;
 import com.remimichel.adapters.SearchAdapter;
 import com.remimichel.listeners.ErrorResponseSearchListener;
 import com.remimichel.listeners.ScrollSearchListener;
-import com.remimichel.utils.Torrent;
-import com.remimichel.utils.TorrentDeserializer;
+import com.remimichel.model.Torrent;
+import com.remimichel.deserializers.TorrentDeserializer;
 import com.android.volley.Response;
 
 import org.json.JSONArray;
