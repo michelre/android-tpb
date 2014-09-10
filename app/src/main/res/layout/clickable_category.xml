@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="55dip"
+    android:orientation="vertical" >
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="40dp"
-    android:minHeight="40dp"
-    android:background="@android:color/darker_gray">
     <TextView
         android:id="@+id/category_name"
-        android:textColor="#fffdfdfd"
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:text="APPLICATION"
-        android:layout_alignParentLeft="true"
-        android:gravity="center_vertical"
-        android:paddingLeft="15dp"
-        android:paddingRight="1dp"
-        android:textStyle="bold"/>
-</RelativeLayout>
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="17dip"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft" />
+
+</LinearLayout>

@@ -13,6 +13,8 @@ public class Category implements Comparable<Category>, Parcelable{
         return this.name;
     }
 
+    public Category(){}
+
     public Category(String path, Boolean hasChildren, String name, List<Category> categories) {
         this.path = path;
         this.name = name;
@@ -52,6 +54,14 @@ public class Category implements Comparable<Category>, Parcelable{
         this.hasChildren = hasChildren;
     }
 
+    public boolean isExpanded() {
+        return expanded;
+    }
+
+    public void setExpanded(boolean expanded) {
+        this.expanded = expanded;
+    }
+
     @SerializedName("has_children")
     private Boolean hasChildren;
 
@@ -63,6 +73,8 @@ public class Category implements Comparable<Category>, Parcelable{
 
     @SerializedName("categories")
     private List<Category> categories;
+
+    private boolean expanded;
 
     @Override
     public int compareTo(Category category) {

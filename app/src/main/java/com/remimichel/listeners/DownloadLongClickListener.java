@@ -1,6 +1,9 @@
-package com.remimichel.utils;
+package com.remimichel.listeners;
 
 import android.util.Base64;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -14,9 +17,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.remimichel.activities.DownloadActivity;
-import com.remimichel.connection.CheckActiveConnection;
-import com.remimichel.connection.ConnectionStateController;
 import com.remimichel.deserializers.DownloadDeserializer;
+import com.remimichel.fragments.DialogDeleteDownloadFragment;
 import com.remimichel.model.Connection;
 import com.remimichel.model.Download;
 
@@ -27,28 +29,44 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class DownloadsInfoTask implements Runnable, CheckActiveConnection {
+public class DownloadLongClickListener implements AdapterView.OnItemLongClickListener {
 
     private DownloadActivity activity;
+    private List<Download> downloads;
     private RequestQueue queue;
-    private ConnectionStateController connectionStateController;
+    private DialogDeleteDownloadFragment deleteDownloadDialog;
+    private Download downloadToDelete;
 
-    public DownloadsInfoTask(DownloadActivity activity) {
+    public Download getDownloadToDelete(){
+        return this.downloadToDelete;
+    }
+
+    public DownloadLongClickListener(List<Download> downloads, DownloadActivity activity) {
+        this.downloads = downloads;
         this.activity = activity;
         this.queue = Volley.newRequestQueue(this.activity);
+        this.deleteDownloadDialog = new DialogDeleteDownloadFragment();
+        this.deleteDownloadDialog.setDownloadLongClickListener(this);
+        this.deleteDownloadDialog.setActivity(this.activity);
     }
 
     @Override
-    public void run() {
-        this.retrieveDownloadsInfo();
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+        this.deleteDownloadDialog.show(this.activity.getFragmentManager(), "delete-download");
+        this.downloadToDelete = this.downloads.get(i);
+        Log.e("JSON OBJECT", " " + this.downloadToDelete.getId());
+        return false;
     }
 
-    private void retrieveDownloadsInfo(){
+    public void doDelete(boolean removeLocalData){
         try {
             String url = "http://" + Connection.host + ":" + Connection.port + "/transmission/rpc";
-            JSONObject jsonObject = new JSONObject("{\"method\":\"torrent-get\", \"arguments\":{\"fields\":[\"name\", \"id\", \"percentDone\", \"rateDownload\", \"rateUpload\", \"totalSize\"]}}");
+            JSONObject jsonObject = new JSONObject("{\"method\":\"torrent-remove\", \"arguments\":{\"ids\":[" + this.downloadToDelete.getId() + "], \"delete-local-data\":" + removeLocalData + "}}");
+
+            Log.e("JSON OBJECT", jsonObject.toString() + " " + this.downloadToDelete.getId());
             JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject jsonArray) {
@@ -57,17 +75,17 @@ public class DownloadsInfoTask implements Runnable, CheckActiveConnection {
                         Type collectionType = new TypeToken<Collection<Download>>() {
                         }.getType();
                         ArrayList<Download> downloads = new ArrayList<Download>((Collection<Download>) gson.fromJson(jsonArray.getJSONObject("arguments").getJSONArray("torrents").toString(), collectionType));
-                        DownloadsInfoTask.this.activity.getAdapter().updateDownloadsList(downloads);
+                        DownloadLongClickListener.this.activity.getAdapter().updateDownloadsList(downloads);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
 
                 }
-            }, new Response.ErrorListener(){
+            }, new Response.ErrorListener() {
 
                 @Override
                 public void onErrorResponse(VolleyError volleyError) {
-                    Connection.state = "CONNECTION_ERROR";
+                    Log.e("ERROR DOWNLOAD INFO", volleyError.toString());
                 }
             }) {
 
@@ -86,15 +104,10 @@ public class DownloadsInfoTask implements Runnable, CheckActiveConnection {
                 }
 
             };
-            jsonArrayRequest.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS*2, 1, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            jsonArrayRequest.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 2, 1, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             this.queue.add(jsonArrayRequest);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void doTask() {
-        this.retrieveDownloadsInfo();
     }
 }

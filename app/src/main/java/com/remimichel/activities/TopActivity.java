@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,6 +22,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.remimichel.adapters.SearchAdapter;
 import com.remimichel.listeners.ErrorResponseSearchListener;
+import com.remimichel.listeners.ItemClickListener;
+import com.remimichel.model.Connection;
 import com.remimichel.model.Torrent;
 import com.remimichel.deserializers.TorrentDeserializer;
 
@@ -36,7 +39,7 @@ public class TopActivity extends ListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActionBar().setDisplayShowTitleEnabled(false);
-        getActionBar().setDisplayUseLogoEnabled(false);
+        getActionBar().setIcon(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
         setContentView(R.layout.activity_searchable);
         this.progressDialog = ProgressDialog.show(this, "", "Searching torrents...", true, false);
         this.torrents = new ArrayList<Torrent>();
@@ -47,10 +50,8 @@ public class TopActivity extends ListActivity {
 
     public void doSearch(String categoryPath) {
         try {
-            this.setLoading(true);
             RequestQueue queue = Volley.newRequestQueue(TopActivity.this);
-            //String url = "http://90.42.184.170:9001/torrents/search?q=" + URLEncoder.encode(SearchableActivity.this.query, "UTF-8") + "&offset=" + SearchableActivity.this.currentPage;
-            String url = "http://82.122.122.250:9001/torrents/top/" + categoryPath;
+            String url = Connection.hostApi + ":9001/torrents/top/" + categoryPath;
             JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
                 @Override
                 public void onResponse(JSONArray jsonArray) {
@@ -73,8 +74,8 @@ public class TopActivity extends ListActivity {
             this.torrents.addAll(torrents);
             SearchAdapter adapter = new SearchAdapter(this.torrents, this);
             this.setListAdapter(adapter);
-            this.setLoading(false);
             ListView listView = this.getListView();
+            listView.setOnItemClickListener(new ItemClickListener(this.torrents, this));
         }
         this.progressDialog.dismiss();
 
@@ -118,15 +119,6 @@ public class TopActivity extends ListActivity {
         super.onRestoreInstanceState(savedInstanceState);
     }
 
-    public boolean isLoading() {
-        return loading;
-    }
-
-    public void setLoading(boolean loading) {
-        this.loading = loading;
-    }
-
-    private boolean loading;
     private ProgressDialog progressDialog;
     private ArrayList<Torrent> torrents;
 }

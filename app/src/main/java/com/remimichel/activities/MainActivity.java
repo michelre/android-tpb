@@ -4,6 +4,7 @@ import android.app.ListActivity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
@@ -19,10 +20,13 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.remimichel.adapters.CategoriesAdapter;
 import com.remimichel.model.Category;
+import com.remimichel.model.Connection;
+import com.remimichel.services.CheckConnectionService;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 
 public class MainActivity extends ListActivity implements AdapterView.OnItemClickListener {
@@ -40,10 +44,12 @@ public class MainActivity extends ListActivity implements AdapterView.OnItemClic
      * ATTRIBUTES  *
      * *************
      */
+    private Category clickedCategory = new Category();
     private ArrayList<Category> categories;
     private int firstIndex;
     private int lastIndex;
     private int indexOfClick;
+    private CategoriesAdapter adapter;
 
     /**
      * ******************
@@ -56,7 +62,12 @@ public class MainActivity extends ListActivity implements AdapterView.OnItemClic
         PreferenceManager.setDefaultValues(this, R.xml.settings, false);
         getActionBar().setDisplayShowTitleEnabled(false);
         getActionBar().setDisplayUseLogoEnabled(false);
+        getActionBar().setIcon(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
         setContentView(R.layout.activity_main);
+        this.adapter = new CategoriesAdapter(this);
+        this.getListView().setOnItemClickListener(MainActivity.this);
+        Intent intent = new Intent(this, CheckConnectionService.class);
+        startService(intent);
         if (savedInstanceState == null) {
             this.findCategories("CATEGORIES", 1);
         }
@@ -91,6 +102,9 @@ public class MainActivity extends ListActivity implements AdapterView.OnItemClic
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         this.indexOfClick = i;
+        //this.clickedCategory.setExpanded(false);
+        this.clickedCategory = this.categories.get(i);
+        this.clickedCategory.setExpanded(true);
         if (this.categories.get(i).isHasChildren())
             this.findCategories(this.categories.get(i).getPath(), 1);
         else {
@@ -116,17 +130,14 @@ public class MainActivity extends ListActivity implements AdapterView.OnItemClic
      */
     private void findCategories(String childrenOf, int depth) {
         RequestQueue queue = Volley.newRequestQueue(this);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("http://82.122.122.250:9001/categories?children_of=" + childrenOf + "&depth=" + depth, null, new Response.Listener<JSONObject>() {
-            //JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("http://192.168.1.17:9001/categories?children_of="+childrenOf+"&depth="+depth, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Connection.hostApi + ":9001/categories?children_of=" + childrenOf + "&depth=" + depth, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
                 Category category = new Gson().fromJson(String.valueOf(jsonObject), Category.class);
                 if (category.isHasChildren().booleanValue()) {
                     MainActivity.this.setCategories(category);
-                    CategoriesAdapter adapter = new CategoriesAdapter(MainActivity.this.categories, MainActivity.this);
                     MainActivity.this.setListAdapter(adapter);
                 }
-                MainActivity.this.getListView().setOnItemClickListener(MainActivity.this);
 
             }
         }, null);
@@ -156,11 +167,17 @@ public class MainActivity extends ListActivity implements AdapterView.OnItemClic
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         this.categories = savedInstanceState.getParcelableArrayList("categories");
-        CategoriesAdapter adapter = new CategoriesAdapter(this.categories, this);
         this.setListAdapter(adapter);
-        this.getListView().setOnItemClickListener(MainActivity.this);
         this.firstIndex = savedInstanceState.getInt("firstIndex");
         this.lastIndex = savedInstanceState.getInt("lastIndex");
         this.indexOfClick = savedInstanceState.getInt("indexOfClick");
+    }
+
+    public Category getClickedCategory() {
+        return clickedCategory;
+    }
+
+    public ArrayList<Category> getCategories() {
+        return categories;
     }
 }

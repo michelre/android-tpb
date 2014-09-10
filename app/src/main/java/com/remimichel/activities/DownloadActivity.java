@@ -4,77 +4,56 @@ import android.app.ListActivity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.SearchView;
-
 import com.remimichel.adapters.DownloadsAdapter;
+import com.remimichel.model.Connection;
 import com.remimichel.model.Download;
+import com.remimichel.connection.CheckActiveConnection;
+import com.remimichel.connection.ConnectionStateController;
 import com.remimichel.utils.DownloadsInfoTask;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-public class DownloadActivity extends ListActivity {
+public class DownloadActivity extends ListActivity implements CheckActiveConnection {
 
+    private ScheduledFuture task;
     private ScheduledThreadPoolExecutor scheduledThread;
     private List<Download> downloads;
     private DownloadsAdapter adapter;
-
-    public ScheduledThreadPoolExecutor getScheduledThread() {
-        return scheduledThread;
-    }
-
-    public void setScheduledThread(ScheduledThreadPoolExecutor scheduledThread) {
-        this.scheduledThread = scheduledThread;
-    }
-
-    public List<Download> getDownloads() {
-        return downloads;
-    }
-
-    public void setDownloads(List<Download> downloads) {
-        this.downloads = downloads;
-    }
-
-    public DownloadsAdapter getAdapter() {
-        return adapter;
-    }
-
-    public void setAdapter(DownloadsAdapter adapter) {
-        this.adapter = adapter;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActionBar().setDisplayShowTitleEnabled(false);
-        getActionBar().setDisplayUseLogoEnabled(false);
+        getActionBar().setIcon(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
         setContentView(R.layout.activity_download);
         this.downloads = new ArrayList<Download>();
-
         this.adapter = new DownloadsAdapter(this.downloads, this);
         this.setListAdapter(adapter);
-
         this.scheduledThread = new ScheduledThreadPoolExecutor(1);
-        //this.scheduledThread.scheduleWithFixedDelay(new DownloadsInfoTask(this), 0, 2, TimeUnit.SECONDS);
-        //this.progressDialog = ProgressDialog.show(this, "", "Searching torrents...", true, false);
     }
 
     @Override
     public void onPause(){
         super.onPause();
-        this.scheduledThread.shutdown();
+        if(this.task != null)
+            this.task.cancel(false);
     }
 
     @Override
     public void onResume(){
         super.onResume();
-        scheduledThread.scheduleWithFixedDelay(new DownloadsInfoTask(this), 0, 3000, TimeUnit.MILLISECONDS);
+        new ConnectionStateController(this, this).checkConnectionState();
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -98,6 +77,18 @@ public class DownloadActivity extends ListActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    //private ProgressDialog progressDialog;
-    //private ArrayList<Torrent> torrents;
+    public DownloadsAdapter getAdapter() {
+        return adapter;
+    }
+
+    @Override
+    public void doTask() {
+        DownloadsInfoTask downloadsInfoTask = new DownloadsInfoTask(this);
+        if(Connection.state != "CONNECTION_ERROR")
+            this.task = this.scheduledThread.scheduleAtFixedRate(downloadsInfoTask, 0, 2000, TimeUnit.MILLISECONDS);
+        else{
+            this.task.cancel(false);
+            this.task = this.scheduledThread.scheduleAtFixedRate(downloadsInfoTask, 0, 2000, TimeUnit.MILLISECONDS);
+        }
+    }
 }

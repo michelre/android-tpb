@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,10 +22,13 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.remimichel.adapters.SearchAdapter;
 import com.remimichel.listeners.ErrorResponseSearchListener;
+import com.remimichel.listeners.ItemClickListener;
 import com.remimichel.listeners.ScrollSearchListener;
+import com.remimichel.model.Connection;
 import com.remimichel.model.Torrent;
 import com.remimichel.deserializers.TorrentDeserializer;
 import com.android.volley.Response;
+import com.remimichel.connection.ConnectionDialogs;
 
 import org.json.JSONArray;
 
@@ -40,7 +44,7 @@ public class SearchableActivity extends ListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActionBar().setDisplayShowTitleEnabled(false);
-        getActionBar().setDisplayUseLogoEnabled(false);
+        getActionBar().setIcon(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
         setContentView(R.layout.activity_searchable);
         this.progressDialog = ProgressDialog.show(this, "", "Searching torrents...", true, false);
         this.torrents = new ArrayList<Torrent>();
@@ -58,8 +62,7 @@ public class SearchableActivity extends ListActivity {
                 this.saveScrollPosition();
                 this.setLoading(true);
                 RequestQueue queue = Volley.newRequestQueue(SearchableActivity.this);
-                //String url = "http://90.42.184.170:9001/torrents/search?q=" + URLEncoder.encode(SearchableActivity.this.query, "UTF-8") + "&offset=" + SearchableActivity.this.currentPage;
-                String url = "http://82.122.122.250:9001/torrents/search?q=" + URLEncoder.encode(SearchableActivity.this.query, "UTF-8") + "&offset=" + SearchableActivity.this.currentPage;
+                String url = Connection.hostApi + ":9001/torrents/search?q=" + URLEncoder.encode(SearchableActivity.this.query, "UTF-8") + "&offset=" + SearchableActivity.this.currentPage;
                 JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray jsonArray) {
@@ -87,7 +90,7 @@ public class SearchableActivity extends ListActivity {
             ListView listView = this.getListView();
             listView.setOnScrollListener(new ScrollSearchListener(this));
             listView.setSelectionFromTop(this.index, this.top);
-            //listView.setOnItemClickListener(new ItemClickListener(torrents, this));
+            listView.setOnItemClickListener(new ItemClickListener(torrents, this));
         }
         this.progressDialog.dismiss();
 
@@ -137,22 +140,6 @@ public class SearchableActivity extends ListActivity {
         this.loading = loading;
     }
 
-    public int getCurrentPage() {
-        return currentPage;
-    }
-
-    public void setCurrentPage(int currentPage) {
-        this.currentPage = currentPage;
-    }
-
-    public String getQuery() {
-        return query;
-    }
-
-    public void setQuery(String query) {
-        this.query = query;
-    }
-
     private boolean loading;
     private ProgressDialog progressDialog;
     private ArrayList<Torrent> torrents;
@@ -160,4 +147,6 @@ public class SearchableActivity extends ListActivity {
     private String query = "";
     private int index;
     private int top;
+
+
 }

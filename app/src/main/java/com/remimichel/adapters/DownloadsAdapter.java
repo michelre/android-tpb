@@ -11,8 +11,11 @@ import android.widget.BaseAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.remimichel.activities.DownloadActivity;
 import com.remimichel.activities.R;
+import com.remimichel.listeners.DownloadLongClickListener;
 import com.remimichel.model.Download;
+import com.remimichel.utils.HumanReadableByteCount;
 
 import java.util.List;
 
@@ -21,11 +24,13 @@ public class DownloadsAdapter extends BaseAdapter {
     private Activity activity;
     private List<Download> downloads;
     private LayoutInflater inflater;
+    private DownloadLongClickListener downloadLongClickListener;
 
     public DownloadsAdapter(List<Download> downloads, Activity activity){
         this.activity = activity;
         this.downloads = downloads;
         this.inflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.downloadLongClickListener = new DownloadLongClickListener(this.downloads, (DownloadActivity)this.activity);
     }
 
     @Override
@@ -49,11 +54,13 @@ public class DownloadsAdapter extends BaseAdapter {
         TextView downloadName = (TextView)view.findViewById(R.id.download_name);
         TextView downloadRate = (TextView)view.findViewById(R.id.download_download_rate);
         TextView uploadRate = (TextView)view.findViewById(R.id.download_upload_rate);
+        TextView downloadSize = (TextView)view.findViewById(R.id.download_size);
         ProgressBar downloadPercentDone = (ProgressBar)view.findViewById(R.id.download_percent_done);
         downloadName.setText(this.downloads.get(i).getName());
-        downloadRate.setText(downloadRate.getText() + " " + this.downloads.get(i).getRateDownload() / 1000 + "kB/s");
-        uploadRate.setText(uploadRate.getText() + " " + this.downloads.get(i).getRateUpload() / 1000 + "kB/s");
+        downloadRate.setText(downloadRate.getText() + " " + HumanReadableByteCount.humanReadableByteCount(this.downloads.get(i).getRateDownload(), true) + "/s");
+        uploadRate.setText(uploadRate.getText() + " " + HumanReadableByteCount.humanReadableByteCount(this.downloads.get(i).getRateUpload(), true) + "/s");
         downloadPercentDone.setProgress(Math.round(this.downloads.get(i).getPercentDone() * 100));
+        downloadSize.setText(downloadSize.getText() + " " + HumanReadableByteCount.humanReadableByteCount((long)this.downloads.get(i).getSize(), true));
         return view;
     }
 
@@ -61,5 +68,6 @@ public class DownloadsAdapter extends BaseAdapter {
         this.downloads.clear();
         this.downloads.addAll(downloads);
         this.notifyDataSetChanged();
+        ((DownloadActivity)this.activity).getListView().setOnItemLongClickListener(this.downloadLongClickListener);
     }
 }

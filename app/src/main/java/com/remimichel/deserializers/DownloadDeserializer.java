@@ -17,6 +17,6 @@ public class DownloadDeserializer implements JsonDeserializer<Download> {
         JsonObject jObject = (JsonObject) jsonElement;
 
         return new Download(jObject.get("id").getAsInt(),
-                jObject.get("name").getAsString(), jObject.get("percentDone").getAsFloat(), jObject.get("rateDownload").getAsInt(), jObject.get("rateUpload").getAsInt());
+                jObject.get("name").getAsString(), jObject.get("percentDone").getAsFloat(), jObject.get("rateDownload").getAsInt(), jObject.get("rateUpload").getAsInt(), jObject.get("totalSize").getAsFloat());
     }
 }
