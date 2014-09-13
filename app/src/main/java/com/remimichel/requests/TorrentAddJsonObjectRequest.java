@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import com.android.volley.Response.Listener;
 import com.android.volley.Response.ErrorListener;
+import com.remimichel.model.Connection;
 
 /**
  * Created by remimichel on 17/08/2014.
@@ -32,10 +33,12 @@ public class TorrentAddJsonObjectRequest extends JsonObjectRequest{
     @Override
     public Map getHeaders() throws AuthFailureError {
         Map headers = new HashMap();
-        String auth = "Basic "
-                + Base64.encodeToString((this.username + ":" + this.password).getBytes(),
-                Base64.NO_WRAP);
-        headers.put("Authorization", auth);
+        if(Connection.authentificationRequired){
+            String auth = "Basic "
+                    + Base64.encodeToString((this.username + ":" + this.password).getBytes(),
+                    Base64.NO_WRAP);
+            headers.put("Authorization", auth);
+        }
         headers.put("X-Transmission-Session-Id", this.sessionId);
         return headers;
     }

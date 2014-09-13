@@ -9,12 +9,19 @@
         android:key="KEY_PORT"
         android:title="@string/setting_port"
         android:defaultValue="9091"/>
+    <CheckBoxPreference
+        android:id="@+id/authentification_required"
+        android:key="KEY_AUTHENTIFICATION_REQUIRED"
+        android:title="Authentification required"
+        android:defaultValue="true"/>
     <EditTextPreference
         android:key="KEY_USERNAME"
+        android:dependency="KEY_AUTHENTIFICATION_REQUIRED"
         android:title="@string/setting_username"
         android:defaultValue="root"/>
     <EditTextPreference
         android:key="KEY_PASSWORD"
+        android:dependency="KEY_AUTHENTIFICATION_REQUIRED"
         android:title="@string/setting_password"
         android:defaultValue="root"
         android:inputType="textPassword"/>

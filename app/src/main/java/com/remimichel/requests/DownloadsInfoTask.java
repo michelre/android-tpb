@@ -1,9 +1,6 @@
-package com.remimichel.listeners;
+package com.remimichel.requests;
 
 import android.util.Base64;
-import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -17,9 +14,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.remimichel.activities.DownloadActivity;
+import com.remimichel.connection.CheckActiveConnection;
 import com.remimichel.deserializers.DownloadDeserializer;
-import com.remimichel.fragments.DialogActionDownloadFragment;
 import com.remimichel.model.Connection;
+import com.remimichel.model.ConnectionState;
 import com.remimichel.model.Download;
 
 import org.json.JSONException;
@@ -31,36 +29,25 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DownloadLongClickListener implements AdapterView.OnItemLongClickListener {
+public class DownloadsInfoTask implements Runnable, CheckActiveConnection {
 
     private DownloadActivity activity;
     private RequestQueue queue;
-    private DialogActionDownloadFragment deleteDownloadDialog;
-    private Download downloadToDelete;
 
-    public Download getDownloadToDelete(){
-        return this.downloadToDelete;
-    }
-
-    public DownloadLongClickListener(DownloadActivity activity) {
+    public DownloadsInfoTask(DownloadActivity activity) {
         this.activity = activity;
         this.queue = Volley.newRequestQueue(this.activity);
-        this.deleteDownloadDialog = new DialogActionDownloadFragment();
-        this.deleteDownloadDialog.setDownloadClickListener(this);
-        this.deleteDownloadDialog.setActivity(this.activity);
     }
 
     @Override
-    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-        this.deleteDownloadDialog.show(this.activity.getFragmentManager(), "delete-download");
-        this.downloadToDelete = this.activity.getDownloads().get(i);
-        return false;
+    public void run() {
+        this.retrieveDownloadsInfo();
     }
 
-    public void doDelete(boolean removeLocalData){
+    private void retrieveDownloadsInfo(){
         try {
             String url = "http://" + Connection.host + ":" + Connection.port + "/transmission/rpc";
-            JSONObject jsonObject = new JSONObject("{\"method\":\"torrent-remove\", \"arguments\":{\"ids\":[" + this.downloadToDelete.getId() + "], \"delete-local-data\":" + removeLocalData + "}}");
+            JSONObject jsonObject = new JSONObject("{\"method\":\"torrent-get\", \"arguments\":{\"fields\":[\"name\", \"id\", \"percentDone\", \"rateDownload\", \"rateUpload\", \"totalSize\", \"status\"]}}");
             JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject jsonArray) {
@@ -69,17 +56,17 @@ public class DownloadLongClickListener implements AdapterView.OnItemLongClickLis
                         Type collectionType = new TypeToken<Collection<Download>>() {
                         }.getType();
                         ArrayList<Download> downloads = new ArrayList<Download>((Collection<Download>) gson.fromJson(jsonArray.getJSONObject("arguments").getJSONArray("torrents").toString(), collectionType));
-                        activity.updateDownloadsList(downloads);
+                        DownloadsInfoTask.this.activity.updateDownloadsList(downloads);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
 
                 }
-            }, new Response.ErrorListener() {
+            }, new Response.ErrorListener(){
 
                 @Override
                 public void onErrorResponse(VolleyError volleyError) {
-                    Log.e("ERROR DOWNLOAD INFO", volleyError.toString());
+                    Connection.state = ConnectionState.CONNECTION_ERROR;
                 }
             }) {
 
@@ -89,19 +76,26 @@ public class DownloadLongClickListener implements AdapterView.OnItemLongClickLis
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
                     Map<String, String> headers = new HashMap<String, String>();
-                    String auth = "Basic "
-                            + Base64.encodeToString((Connection.username + ":" + Connection.password).getBytes(),
-                            Base64.NO_WRAP);
-                    headers.put("Authorization", auth);
+                    if(Connection.authentificationRequired){
+                        String auth = "Basic "
+                                + Base64.encodeToString((Connection.username + ":" + Connection.password).getBytes(),
+                                Base64.NO_WRAP);
+                        headers.put("Authorization", auth);
+                    }
                     headers.put("X-Transmission-Session-Id", Connection.sessionId);
                     return headers;
                 }
 
             };
-            jsonArrayRequest.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 2, 1, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            jsonArrayRequest.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS*2, 1, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             this.queue.add(jsonArrayRequest);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void doTask() {
+        this.retrieveDownloadsInfo();
     }
 }

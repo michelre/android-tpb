@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Piratebay downloader</string>
+    <string name="app_name">Torrents to transmission</string>
     <string name="action_search">Search</string>
     <string name="search_hint">Search torrents</string>
     <string name="activity_searchable">SearchableActivity</string>
@@ -19,5 +19,6 @@
     <string name="top_activity">Top</string>
     <string name="action_download">action_download</string>
     <string name="download_activity">download_activity</string>
+    <string name="action_help">help</string>
 
 </resources>

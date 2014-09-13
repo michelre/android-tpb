@@ -11,30 +11,22 @@ import android.os.Bundle;
 import com.remimichel.activities.DownloadActivity;
 import com.remimichel.activities.SettingActivity;
 
-public class DialogConfigFragment extends DialogFragment {
+public class DialogHelpFragment extends DialogFragment {
 
-    private Activity activity;
+    private DownloadActivity activity;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Transmission server configuration");
-        builder.setMessage("Your transmission server seems not to be well configured yet. You should configure it now!");
+        builder.setMessage("Simple click enables you to stop a download. Long click enables you to remove a download");
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                Intent intent = new Intent(DialogConfigFragment.this.getActivity(), SettingActivity.class);
-                startActivity(intent);
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                //DialogConfigFragment.this.activity.dismissDialogConfig();
             }
         });
         return builder.create();
     }
 
-    public void setActivity(Activity activity) {
+    public void setActivity(DownloadActivity activity) {
         this.activity = activity;
     }
 }

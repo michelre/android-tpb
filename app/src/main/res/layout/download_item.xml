@@ -5,6 +5,7 @@
     android:minHeight="45dp">
     <TextView
         android:id="@+id/download_name"
+        android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
         android:layout_width="0dp"
         android:layout_height="30dp"
         android:text="Divergent.2014.FRENCH.DVDrip.blousondsdsdsds"
@@ -12,18 +13,17 @@
         android:layout_toLeftOf="@+id/download_percent_done"
         android:gravity="center_vertical"
         android:singleLine="true"
-        android:paddingLeft="3dp"
         android:paddingRight="3dp"/>
     <TextView
         android:id="@+id/download_download_rate"
+        android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
         android:layout_width="100dp"
         android:layout_height="15dp"
         android:text="down:"
         android:textSize="10sp"
-        android:paddingLeft="3dp"
         android:paddingRight="3dp"
         android:layout_below="@+id/download_name"
-        android:textColor="#ffc1c0c3"
+        android:textColor="#ffb0afb2"
         android:textStyle="bold"/>
     <TextView
         android:id="@+id/download_upload_rate"
@@ -36,11 +36,11 @@
         android:layout_below="@+id/download_name"
         android:layout_toRightOf="@+id/download_download_rate"
         android:layout_toLeftOf="@+id/download_percent_done"
-        android:textColor="#ffc1c0c3"
+        android:textColor="#ffb0afb2"
         android:textStyle="bold"/>
     <ProgressBar
         android:id="@+id/download_percent_done"
-        android:background="#FFFFFF"
+        android:paddingRight="?android:attr/listPreferredItemPaddingRight"
         style="@android:style/Widget.ProgressBar.Horizontal"
         android:layout_width="100dp"
         android:layout_height="27dp"
@@ -56,7 +56,7 @@
         android:paddingRight="3dp"
         android:layout_below="@+id/download_percent_done"
         android:layout_toRightOf="@+id/download_upload_rate"
-        android:textColor="#ffc1c0c3"
+        android:textColor="#ffb0afb2"
         android:textStyle="bold"/>
 
 

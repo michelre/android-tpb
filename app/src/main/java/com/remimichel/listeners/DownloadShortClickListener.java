@@ -1,6 +1,9 @@
-package com.remimichel.utils;
+package com.remimichel.listeners;
 
 import android.util.Base64;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -10,64 +13,61 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import com.remimichel.activities.DownloadActivity;
-import com.remimichel.connection.CheckActiveConnection;
-import com.remimichel.connection.ConnectionStateController;
-import com.remimichel.deserializers.DownloadDeserializer;
+import com.remimichel.fragments.DialogActionDownloadFragment;
 import com.remimichel.model.Connection;
 import com.remimichel.model.Download;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DownloadsInfoTask implements Runnable, CheckActiveConnection {
+public class DownloadShortClickListener implements AdapterView.OnItemClickListener {
 
     private DownloadActivity activity;
     private RequestQueue queue;
-    private ConnectionStateController connectionStateController;
+    private DialogActionDownloadFragment dialog;
+    private Download selectedDownload;
 
-    public DownloadsInfoTask(DownloadActivity activity) {
+    public DownloadShortClickListener(DownloadActivity activity) {
         this.activity = activity;
         this.queue = Volley.newRequestQueue(this.activity);
+        this.dialog = new DialogActionDownloadFragment();
+        this.dialog.setDownloadClickListener(this);
+        this.dialog.setActivity(this.activity);
     }
 
     @Override
-    public void run() {
-        this.retrieveDownloadsInfo();
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        this.dialog.show(this.activity.getFragmentManager(), "stop-download");
+        this.selectedDownload = this.activity.getDownloads().get(i);
     }
 
-    private void retrieveDownloadsInfo(){
+    public void doStopOrRestart(){
         try {
             String url = "http://" + Connection.host + ":" + Connection.port + "/transmission/rpc";
-            JSONObject jsonObject = new JSONObject("{\"method\":\"torrent-get\", \"arguments\":{\"fields\":[\"name\", \"id\", \"percentDone\", \"rateDownload\", \"rateUpload\", \"totalSize\"]}}");
+            JSONObject jsonObject;
+            if(this.selectedDownload.getStatus() == 0)
+                jsonObject = new JSONObject("{\"method\":\"torrent-start\", \"arguments\":{\"ids\":[" + this.selectedDownload.getId() + "]}}");
+            else
+                jsonObject = new JSONObject("{\"method\":\"torrent-stop\", \"arguments\":{\"ids\":[" + this.selectedDownload.getId() + "]}}");
             JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject jsonArray) {
-                    try {
-                        Gson gson = new GsonBuilder().registerTypeAdapter(Download.class, new DownloadDeserializer()).create();
-                        Type collectionType = new TypeToken<Collection<Download>>() {
-                        }.getType();
-                        ArrayList<Download> downloads = new ArrayList<Download>((Collection<Download>) gson.fromJson(jsonArray.getJSONObject("arguments").getJSONArray("torrents").toString(), collectionType));
-                        DownloadsInfoTask.this.activity.getAdapter().updateDownloadsList(downloads);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                    Download selectedDownload = DownloadShortClickListener.this.selectedDownload;
+                    if(selectedDownload.getStatus() == 0){
+                        selectedDownload.setStatus(6);
+                    }else{
+                        selectedDownload.setStatus(0);
                     }
-
                 }
-            }, new Response.ErrorListener(){
+            }, new Response.ErrorListener() {
 
                 @Override
                 public void onErrorResponse(VolleyError volleyError) {
-                    Connection.state = "CONNECTION_ERROR";
+                    Log.e("ERROR DOWNLOAD INFO", volleyError.toString());
                 }
             }) {
 
@@ -86,15 +86,14 @@ public class DownloadsInfoTask implements Runnable, CheckActiveConnection {
                 }
 
             };
-            jsonArrayRequest.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS*2, 1, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            jsonArrayRequest.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 2, 1, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             this.queue.add(jsonArrayRequest);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    @Override
-    public void doTask() {
-        this.retrieveDownloadsInfo();
+    public Download getSelectedDownload() {
+        return selectedDownload;
     }
 }

@@ -5,13 +5,14 @@ import com.google.gson.annotations.SerializedName;
 public class Download implements Comparable<Download> {
 
 
-    public Download(int id, String name, float percentDone, int rateDownload, int rateUpload, float size) {
+    public Download(int id, String name, float percentDone, int rateDownload, int rateUpload, float size, int status) {
         this.id = id;
         this.name = name;
         this.percentDone = percentDone;
         this.rateDownload = rateDownload;
         this.rateUpload = rateUpload;
         this.size = size;
+        this.status = status;
     }
 
     @Override
@@ -59,6 +60,14 @@ public class Download implements Comparable<Download> {
         this.size = size;
     }
 
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
     @SerializedName("id")
     private int id;
     @SerializedName("name")
@@ -71,4 +80,6 @@ public class Download implements Comparable<Download> {
     private int rateUpload;
     @SerializedName("totalSize")
     private float size;
+    @SerializedName("status")
+    private int status;
 }

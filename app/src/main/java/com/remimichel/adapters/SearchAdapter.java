@@ -9,25 +9,24 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.remimichel.activities.R;
+import com.remimichel.activities.SearchActivities;
 import com.remimichel.model.Torrent;
 
 import java.util.List;
 
 public class SearchAdapter extends BaseAdapter {
 
-    private Activity activity;
-    private List<Torrent> torrents;
     private LayoutInflater inflater;
+    private Activity activity;
 
-    public SearchAdapter(List<Torrent> torrents, Activity activity){
+    public SearchAdapter(Activity activity){
         this.activity = activity;
-        this.torrents = torrents;
         this.inflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
     public int getCount() {
-        return this.torrents.size();
+        return ((SearchActivities)this.activity).getTorrents().size();
     }
 
     @Override
@@ -42,11 +41,12 @@ public class SearchAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
+        Torrent torrent = ((SearchActivities)this.activity).getTorrents().get(i);
         view = inflater.inflate(R.layout.result_search_row, null);
         TextView torrentTitle = (TextView)view.findViewById(R.id.torrent_title);
         TextView torrentSize = (TextView)view.findViewById(R.id.torrent_size);
-        torrentTitle.setText(this.torrents.get(i).getTitle());
-        torrentSize.setText(this.torrents.get(i).getSize());
+        torrentTitle.setText(torrent.getTitle());
+        torrentSize.setText(torrent.getSize());
         return view;
     }
 }

@@ -10,11 +10,15 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
+import com.remimichel.activities.SearchActivities;
+import com.remimichel.activities.SearchableActivity;
+import com.remimichel.activities.TopActivity;
+import com.remimichel.connection.ConnectionController;
+import com.remimichel.connection.ConnectionDialogsController;
 import com.remimichel.model.Connection;
 import com.remimichel.model.Torrent;
 import com.remimichel.requests.TorrentAddJsonObjectRequest;
 import com.remimichel.connection.CheckActiveConnection;
-import com.remimichel.connection.ConnectionStateController;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,20 +27,15 @@ import java.util.ArrayList;
 
 public class ItemClickListener implements AdapterView.OnItemClickListener, CheckActiveConnection {
 
-    private ArrayList<Torrent> torrents;
-    private String sessionId;
     private Torrent selectedTorrent;
     private ProgressDialog progressDialog;
     private Activity activity;
     private RequestQueue queue;
 
-    private ConnectionStateController connectionStateController;
 
-    public ItemClickListener(ArrayList<Torrent> torrents, Activity activity) {
-        this.torrents = torrents;
+    public ItemClickListener(Activity activity) {
         this.activity = activity;
         this.queue = Volley.newRequestQueue(this.activity);
-        this.connectionStateController = new ConnectionStateController(this.activity, this);
     }
 
     private void addTorrent() {
@@ -59,8 +58,8 @@ public class ItemClickListener implements AdapterView.OnItemClickListener, Check
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-        this.selectedTorrent = this.torrents.get(position);
-        ItemClickListener.this.connectionStateController.checkConnectionState();
+        this.selectedTorrent = ((SearchActivities)this.activity).getTorrents().get(position);
+        ((SearchActivities)this.activity).getConnectionController().notifyConnectionState();
     }
 
     @Override
