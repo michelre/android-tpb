@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Torrents to transmission</string>
+    <string name="action_search">Rechercher</string>
+    <string name="search_hint">Rechercher des torrents</string>
+    <string name="activity_searchable">SearchableActivity</string>
+    <string name="main_activity">Main</string>
+    <string name="action_settings">action_settings</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Annuler</string>
+    <string name="setting_host">Host</string>
+    <string name="setting_port">Port</string>
+    <string name="title_activity_settings_fragment">SettingsFragment</string>
+    <string name="title_activity_setting">Configurer le serveur transmission</string>
+    <string name="setting_username">Nom d\'utilisateur</string>
+    <string name="setting_password">Mot de passe</string>
+    <string name="loading">chargement</string>
+    <string name="top_activity">Top</string>
+    <string name="action_download">action_download</string>
+    <string name="download_activity">download_activity</string>
+    <string name="action_help">aide</string>
+    <string name="banner_ad_unit_id">ca-app-pub-1672668279810586/2282168554</string>
+    <string name="title_activity_api">Trackers</string>
+    <string name="header_transmission_configuration">Configuration de transmission</string>
+    <string name="header_api_t411_configuration">Configuration T411</string>
+    <string name="Stop">Stop</string>
+    <string name="Remove">Supprimer</string>
+    <string name="title_searchable">Résulats provenant de</string>
+    <string name="remove_confirm">Voulez-vous vraiment supprimer </string>
+    <string name="remove_local_data">Supprimer les données</string>
+    <string name="download_size">taille:</string>
+    <string name="drawer_search">Rechercher</string>
+    <string name="error_api_connection">Erreur de connexion à l\'API</string>
+    <string name="title_category_activity">Catégories</string>
+    <string name="search_categories">Recherche des catégories...</string>
+    <string name="waiting">Patientez...</string>
+    <string name="title_activity_download">Téléchargements</string>
+    <string name="searching_torrents">Recherche des torrents...</string>
+    <string name="title_activity_setting_display">Configurations</string>
+    <string name="connecting_transmission">Connexion au serveur transmission...</string>
+    <string name="transmission_server_configuration_dialog">Configuration du serveur transmission</string>
+    <string name="transmission_server_configuration_message_dialog">Votre serveur transmission ne semble pas bien configuré. Vous devriez le configurer maintenant</string>
+    <string name="download">Télécharger</string>
+    <string name="connecting">connexion en cours...</string>
+    <string name="t411_configuration_dialog">Configuration du tracker</string>
+    <string name="t411_configuration_message_dialog">Veuillez configurer les paramètres de votre compte T411</string>
+    <string name="sending_transmission">Envoi à transmission...</string>
+    <string name="searching_info">Recherche des infos...</string>
+    <string name="authentification_required">Authentification requise</string>
+
+</resources>

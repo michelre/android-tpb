@@ -5,4 +5,5 @@
     <item name="download_icon" type="id" />
     <item name="main_activity" type="id">main_activity</item>
     <item name="searchable_activity" type="id">searchable_activity</item>
+    <item name="api_activity" type="id" />
 </resources>

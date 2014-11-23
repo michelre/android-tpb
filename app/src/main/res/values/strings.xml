@@ -20,5 +20,33 @@
     <string name="action_download">action_download</string>
     <string name="download_activity">download_activity</string>
     <string name="action_help">help</string>
+    <string name="banner_ad_unit_id">ca-app-pub-1672668279810586/2282168554</string>
+    <string name="title_searchable">Results from</string>
+    <string name="title_activity_api">APIActivity</string>
+    <string name="header_transmission_configuration">Transmission configuration</string>
+    <string name="header_api_t411_configuration">T411 configuration</string>
+    <string name="Stop">Stop</string>
+    <string name="Remove">Remove</string>
+    <string name="remove_confirm">Do you really want to remove</string>
+    <string name="remove_local_data">Remove local data</string>
+    <string name="download_size">size:</string>
+    <string name="drawer_search">Search</string>
+    <string name="error_api_connection">Failed to connect to the API</string>
+    <string name="title_category_activity">Categories</string>
+    <string name="search_categories">Searching categories...</string>
+    <string name="waiting">Please wait...</string>
+    <string name="title_activity_download">Downloads</string>
+    <string name="searching_torrents">Searching torrents...</string>
+    <string name="title_activity_setting_display">Settings</string>
+    <string name="connecting_transmission">Connecting to the transmission server...</string>
+    <string name="transmission_server_configuration_dialog">Transmission server configuration</string>
+    <string name="transmission_server_configuration_message_dialog">Your transmission server seems not to be well configured yet. You should configure it now!</string>
+    <string name="download">Download</string>
+    <string name="connecting">connecting...</string>
+    <string name="t411_configuration_dialog">Tracker configuration</string>
+    <string name="t411_configuration_message_dialog">Please configure your T411 account parameters</string>
+    <string name="sending_transmission">Sending to transmission...</string>
+    <string name="searching_info">Searching info...</string>
+    <string name="authentification_required">Authentification required</string>
 
 </resources>

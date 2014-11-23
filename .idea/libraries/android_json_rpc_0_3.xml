@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="android-json-rpc-0.3">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/app/libs/android-json-rpc-0.3.4" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

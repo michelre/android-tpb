@@ -1,0 +1,8 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.torrenttotransmission.activities.APIActivity">
+    <item android:id="@+id/action_stop_or_restart"
+        android:title="@string/Stop"/>
+    <item android:id="@+id/action_remove"
+        android:title="@string/Remove"/>
+</menu>

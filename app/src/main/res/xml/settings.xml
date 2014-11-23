@@ -1,29 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <EditTextPreference
-        android:key="KEY_HOST"
-        android:title="@string/setting_host"
-        android:defaultValue="0.0.0.0"/>
-    <EditTextPreference
-        android:key="KEY_PORT"
-        android:title="@string/setting_port"
-        android:defaultValue="9091"/>
-    <CheckBoxPreference
-        android:id="@+id/authentification_required"
-        android:key="KEY_AUTHENTIFICATION_REQUIRED"
-        android:title="Authentification required"
-        android:defaultValue="true"/>
-    <EditTextPreference
-        android:key="KEY_USERNAME"
-        android:dependency="KEY_AUTHENTIFICATION_REQUIRED"
-        android:title="@string/setting_username"
-        android:defaultValue="root"/>
-    <EditTextPreference
-        android:key="KEY_PASSWORD"
-        android:dependency="KEY_AUTHENTIFICATION_REQUIRED"
-        android:title="@string/setting_password"
-        android:defaultValue="root"
-        android:inputType="textPassword"/>
+    <PreferenceCategory
+        android:title="@string/header_transmission_configuration">
+        <EditTextPreference
+            android:key="KEY_HOST"
+            android:title="@string/setting_host"
+            android:defaultValue="0.0.0.0"/>
+        <EditTextPreference
+            android:key="KEY_PORT"
+            android:title="@string/setting_port"
+            android:defaultValue="9091"/>
+        <CheckBoxPreference
+            android:id="@+id/authentification_required"
+            android:key="KEY_AUTHENTIFICATION_REQUIRED"
+            android:title="@string/authentification_required"
+            android:defaultValue="true"/>
+        <EditTextPreference
+            android:key="KEY_USERNAME"
+            android:dependency="KEY_AUTHENTIFICATION_REQUIRED"
+            android:title="@string/setting_username"
+            android:defaultValue=""/>
+        <EditTextPreference
+            android:key="KEY_PASSWORD"
+            android:dependency="KEY_AUTHENTIFICATION_REQUIRED"
+            android:title="@string/setting_password"
+            android:defaultValue=""
+            android:inputType="textPassword"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/header_api_t411_configuration">
+        <EditTextPreference
+            android:key="KEY_USERNAME_T411"
+            android:title="@string/setting_username"
+            android:defaultValue=""/>
+        <EditTextPreference
+            android:key="KEY_PASSWORD_T411"
+            android:title="@string/setting_password"
+            android:defaultValue=""
+            android:inputType="textPassword"/>
+        </PreferenceCategory>
+
 
 </PreferenceScreen>

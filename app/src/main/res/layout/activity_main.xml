@@ -3,14 +3,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    tools:context="com.remimichel.activities.MainActivity"
+    tools:context="com.torrenttotransmission.activities.CategoryActivity"
     android:clickable="true"
     android:id="@id/main_activity">
-    <ExpandableListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:id="@android:id/list"></ExpandableListView>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ExpandableListView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:id="@android:id/list"/>
+
+        <fragment
+            android:id="@+id/adFragment"
+            android:name="com.torrenttotransmission.fragments.AdFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        </RelativeLayout>
+
+
     <ListView android:id="@+id/left_drawer"
         android:layout_width="240dp"
         android:layout_height="match_parent"
@@ -19,4 +32,5 @@
         android:divider="@android:color/transparent"
         android:dividerHeight="0dp"
         android:background="#111"/>
+
 </android.support.v4.widget.DrawerLayout>

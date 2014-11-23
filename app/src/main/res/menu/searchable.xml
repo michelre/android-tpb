@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.remimichel.activities.SearchableActivity" >
-    <item android:id="@+id/action_help"
-        android:title="@string/action_help"
-        android:icon="@drawable/ic_action_help"
-        android:showAsAction="always"/>
+    tools:context="com.torrenttotransmission.activities.SearchableActivity" >
     <item android:id="@+id/action_search"
         android:title="@string/action_search"
         android:icon="@drawable/ic_action_search"

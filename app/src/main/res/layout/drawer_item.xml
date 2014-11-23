@@ -13,17 +13,18 @@
         android:padding="8dp">
         <ImageView
             android:id="@+id/drawer_icon"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:src="@drawable/ic_action_search"/>
         <TextView
             android:id="@+id/drawer_text"
             android:layout_width="fill_parent"
             android:layout_height="50dp"
-            android:text="Search"
+            android:text="@string/drawer_search"
             android:gravity="center_vertical"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:layout_marginLeft="20dp"
+            android:singleLine="true"
             android:layout_weight="3"
             android:textColor="#FFFFFF"/>
     </LinearLayout>
